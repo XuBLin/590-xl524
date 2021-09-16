@@ -49,7 +49,7 @@ age_train, age_test, weight_train, weight_test, label_train, label_test =\
 # initial
 A, w, x0, S = 0.5, 0.5, 0.5, 0.5
 
-tol = 10**-5
+# tol = 10**-9
 t, tmax = 0, 1000
 step_size = 0.001
 LR = 0.1
@@ -58,21 +58,87 @@ test_loss = []
 x_axis = []
 
 
-def optimizer(xtrain, ytrain, xtest, ytest, algo, LR=0.1, method='batch'):
-    global A, w, x0, S, train_loss, test_loss, x_axis
+def GDAlgo(A, w, x0, S, dA, dw, dx0, dS, LR):
+    Anew = A - LR * dA
+    wnew = w - LR * dw
+    x0new = x0 - LR * dx0
+    Snew = S - LR * dS
+    return Anew, wnew, x0new, Snew
+
+
+def GDplusAlgo(A, w, x0, S, dA, dw, dx0, dS, LR, gradient=[], gamma=0):
+    if len(gradient) != 0:
+        dA = gamma * gradient[0] + LR * dA
+        dw = gamma * gradient[1] + LR * dw
+        dx0 = gamma * gradient[2] + LR * dx0
+        dS = gamma * gradient[3] + LR * dS
+        gradient = np.array([dA, dw, dx0, dS])
+        Anew = A - dA
+        wnew = w - dw
+        x0new = x0 - dx0
+        Snew = S - dS
+    else:
+        Anew = A - LR * dA
+        wnew = w - LR * dw
+        x0new = x0 - LR * dx0
+        Snew = S - LR * dS
+    return Anew, wnew, x0new, Snew
+
+
+def RMSPropAlgo(A, w, x0, S, dA, dw, dx0, dS, LR, decay_rate=0, eps=0):
+    global cache
+    sum = dA**2 + dw**2 + dx0**2 + dS**2
+    cache = decay_rate * cache + (1-decay_rate) * sum
+    RMSLR = LR/np.sqrt(cache+eps)
+    Anew = A - RMSLR * dA
+    wnew = w - RMSLR * dw
+    x0new = x0 - RMSLR * dx0
+    Snew = S - RMSLR * dS
+    return Anew, wnew, x0new, Snew
+
+
+def AlgoSelect(Algo, A, w, x0, S, dA, dw, dx0, dS, LR, gradient=[], gamma=0,
+               decay_rate=0, eps=0):
+    global cache
+    if Algo == 'GD':
+        return GDAlgo(A, w, x0, S, dA, dw, dx0, dS, LR)
+    elif Algo == 'GD+':
+        return GDplusAlgo(A, w, x0, S, dA, dw, dx0, dS, LR, gradient, gamma)
+    elif Algo == 'RMSProp':
+        return RMSPropAlgo(A, w, x0, S, dA, dw, dx0, dS, LR, decay_rate, eps)
+
+
+def Caldevs(prev, x, y, A, w, x0, S, step_size):
+    dA = (prev - logis_mse(x, y, A-step_size, w, x0, S))/step_size
+    dw = (prev - logis_mse(x, y, A, w-step_size, x0, S))/step_size
+    dx0 = (prev - logis_mse(x, y, A, w, x0-step_size, S))/step_size
+    dS = (prev - logis_mse(x, y, A, w, x0, S-step_size))/step_size
+    return dA, dw, dx0, dS
+
+
+def optimizer(xtrain, ytrain, xtest, ytest, LR=0.1):
+    method = input("Please input the method(batch/mini-batch/stochastic)^^")
+    algo = input("Please input the algorithm(GD/GD+/RMSProp)")
+    global A, w, x0, S, train_loss, test_loss, x_axis, cache
+    gamma, decay_rate, cache, eps = 0, 0, 0, 0
+    prevdelta = -1
     if algo == 'GD+':
         gamma = input("Please input the value of gamma^^")
     elif algo == 'RMSProp':
         decay_rate = input("Please input the value of decay_rate^^")
+        decay_rate = float(decay_rate)
         cache = 0
         eps = 10**-8
     # initial
+    if method == 'stochastic':
+        sequence = list(range(0, len(age_train)))
+        index = random.sample(sequence, k=len(sequence))
     A, w, x0, S = 0.5, 0.5, 0.5, 0.5
 
-    tol = 10**-5
-    t, tmax = 0, 1000
+    tol = 10**-7
+    t, tmax = 0, 500
     step_size = 0.001
-    LR = 0.1
+    LR = 0.01
     train_loss = []
     test_loss = []
     x_axis = []
@@ -84,115 +150,60 @@ def optimizer(xtrain, ytrain, xtest, ytest, algo, LR=0.1, method='batch'):
         if method == 'batch':
             prev = logis_mse(xtrain, ytrain, A, w, x0, S)
             train_loss.append(prev)
+            dA, dw, dx0, dS = Caldevs(prev, xtrain, ytrain, A, w, x0, S, step_size)
+            Anew, wnew, x0new, Snew = AlgoSelect(algo, A, w, x0, S, dA, dw, dx0,
+                                                 dS, LR, gradient, gamma, decay_rate, eps)
+            A, w, x0, S = Anew, wnew, x0new, Snew
         elif method == 'mini-batch':
             sequence = list(range(0, len(age_train)))
             index = random.sample(sequence, k=len(age_train)//2)
             xbatch = np.array([xtrain[i] for i in index])
             ybatch = np.array([ytrain[i] for i in index])
             prev = logis_mse(xbatch, ybatch, A, w, x0, S)
+            dA, dw, dx0, dS = Caldevs(prev, xbatch, ybatch, A, w, x0, S, step_size)
+            Anew, wnew, x0new, Snew = AlgoSelect(algo, A, w, x0, S, dA, dw, dx0,
+                                                 dS, LR, gradient, gamma, decay_rate, eps)
+            A, w, x0, S = Anew, wnew, x0new, Snew
+            # choose another batch
+            xbatch = np.array([xtrain[i] for i in sequence if i not in index])
+            xbatch = np.array([ytrain[i] for i in sequence if i not in index])
+            prev = logis_mse(xbatch, ybatch, A, w, x0, S)
+            dA, dw, dx0, dS = Caldevs(prev, xbatch, ybatch, A, w, x0, S, step_size)
+            Anew, wnew, x0new, Snew = AlgoSelect(algo, A, w, x0, S, dA, dw, dx0,
+                                                 dS, LR, gradient, gamma, decay_rate, eps)
             train_loss.append(prev)
+            A, w, x0, S = Anew, wnew, x0new, Snew
         elif method == 'stochastic':
-            sequence = list(range(0, len(age_train)))
+            '''sequence = list(range(0, len(age_train)))
             index = random.sample(sequence, k=1)
             xbatch = np.array([xtrain[i] for i in index])
             ybatch = np.array([ytrain[i] for i in index])
             prev = logis_mse(xbatch, ybatch, A, w, x0, S)
+            train_loss.append(prev)'''
+            
+            for j in range(len(sequence)):
+                x = np.array([xtrain[index[j]]])
+                y = np.array([ytrain[index[j]]])
+                prev = logis_mse(x, y, A, w, x0, S)
+                dA, dw, dx0, dS = Caldevs(prev, x, y, A, w, x0, S, step_size)
+                Anew, wnew, x0new, Snew = AlgoSelect(algo, A, w, x0, S, dA, dw, dx0,
+                                                     dS, LR, gradient, gamma, decay_rate, eps)
+                A, w, x0, S = Anew, wnew, x0new, Snew
             train_loss.append(prev)
         else:
             raise ValueError("method must be batch, mini-batch or stochastic")
 
-        # compute gradient
-        if method == 'batch':
-            dA = (prev - logis_mse(xtrain, ytrain, A-step_size, w, x0, S))/step_size
-            dw = (prev - logis_mse(xtrain, ytrain, A, w-step_size, x0, S))/step_size
-            dx0 = (prev - logis_mse(xtrain, ytrain, A, w, x0-step_size, S))/step_size
-            dS = (prev - logis_mse(xtrain, ytrain, A, w, x0, S-step_size))/step_size
-        else:
-            dA = (prev - logis_mse(xbatch, ybatch, A-step_size, w, x0, S))/step_size
-            dw = (prev - logis_mse(xbatch, ybatch, A, w-step_size, x0, S))/step_size
-            dx0 = (prev - logis_mse(xbatch, ybatch, A, w, x0-step_size, S))/step_size
-            dS = (prev - logis_mse(xbatch, ybatch, A, w, x0, S-step_size))/step_size
+        delta = abs(prev - logis_mse(xtrain, ytrain, Anew, wnew, x0new, Snew))
 
-        if algo == 'GD+':
-            if len(gradient) != 0:
-                dA = gamma * gradient[0] + LR * dA
-                dw = gamma * gradient[1] + LR * dw
-                dx0 = gamma * gradient[2] + LR * dx0
-                dS = gamma * gradient[3] + LR * dS
-                gradient = np.array([dA, dw, dx0, dS])
-                Anew = A - dA
-                wnew = w - dw
-                x0new = x0 - dx0
-                Snew = S - dS
-            else:
-                Anew = A - LR * dA
-                wnew = w - LR * dw
-                x0new = x0 - LR * dx0
-                Snew = S - LR * dS
-        elif algo == 'RMSProp':
-            sum = dA**2 + dw**2 + dx0**2 + dS**2
-            decay_rate = float(decay_rate)
-            cache = decay_rate * cache + (1-decay_rate) * sum
-            RMSLR = LR/np.sqrt(cache+eps)
-            Anew = A - RMSLR * dA
-            wnew = w - RMSLR * dw
-            x0new = x0 - RMSLR * dx0
-            Snew = S - RMSLR * dS
-        elif algo == 'GD':
-            Anew = A - LR * dA
-            wnew = w - LR * dw
-            x0new = x0 - LR * dx0
-            Snew = S - LR * dS
-
-        '''gradient = np.array([dA, dw, dx0, dS])
-        Anew = A - LR * dA
-        wnew = w - LR * dw
-        x0new = x0 - LR * dx0
-        Snew = S - LR * dS'''
-
-        if method == 'batch':
-            delta = abs(prev - logis_mse(xtrain, ytrain, Anew, wnew, x0new, Snew))
-        else:
-            delta = abs(prev - logis_mse(xbatch, ybatch, Anew, wnew, x0new, Snew))
-        A, w, x0, S = Anew, wnew, x0new, Snew
-        if delta < tol:
+        if abs(delta-prevdelta) < tol:
             print('Stop iteration')
             break
 
+        prevdelta = delta
 
-'''while t < tmax:
-    t = t + 1
-    prev = logis_mse(age_train, weight_train, A, w, x0, S)
-    train_loss.append(prev)
-    test_loss.append(logis_mse(age_test, weight_test, A, w, x0, S))
-    x_axis.append(t)
 
-    # compute gradient
-    dA = (prev - logis_mse(age_train, weight_train, A-step_size, w, x0, S))/step_size
-    dw = (prev - logis_mse(age_train, weight_train, A, w-step_size, x0, S))/step_size
-    dx0 = (prev - logis_mse(age_train, weight_train, A, w, x0-step_size, S))/step_size
-    dS = (prev - logis_mse(age_train, weight_train, A, w, x0, S-step_size))/step_size
+optimizer(age_train, weight_train, age_test, weight_test, LR=0.1)
 
-    gradient = np.array([dA, dw, dx0, dS])
-    Anew = A - LR * dA
-    wnew = w - LR * dw
-    x0new = x0 - LR * dx0
-    Snew = S - LR * dS
-
-    delta = abs(prev - logis_mse(age_train, weight_train, Anew, wnew, x0new, Snew))
-    A, w, x0, S = Anew, wnew, x0new, Snew
-    if delta < tol:
-        print('Stop iteration')
-        break
-'''
-
-optimizer(age_train, weight_train, age_test, weight_test,
-          'GD', LR=0.1, method='batch')
-# print(A, w, x0, S)
-
-# print(logis_mse(age_train, weight_train, A, w, x0, S))
-
-# plot loss
 fig, ax = plt.subplots()
 ax.scatter(x_axis, train_loss, color='red', marker='.', label='Training loss')
 ax.scatter(x_axis, test_loss, color='green', marker='.', label="Testing loss")
