@@ -1,0 +1,195 @@
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv1d (Conv1D)              (None, 47, 1)             6237
+_________________________________________________________________
+dense (Dense)                (None, 47, 32)            64
+_________________________________________________________________
+max_pooling1d (MaxPooling1D) (None, 23, 32)            0
+_________________________________________________________________
+dense_1 (Dense)              (None, 23, 16)            528
+_________________________________________________________________
+conv1d_1 (Conv1D)            (None, 22, 16)            528
+_________________________________________________________________
+max_pooling1d_1 (MaxPooling1 (None, 11, 16)            0
+_________________________________________________________________
+conv1d_2 (Conv1D)            (None, 10, 8)             264
+_________________________________________________________________
+flatten (Flatten)            (None, 80)                0
+_________________________________________________________________
+dense_2 (Dense)              (None, 64)                5184
+_________________________________________________________________
+dropout (Dropout)            (None, 64)                0
+_________________________________________________________________
+dense_3 (Dense)              (None, 32)                2080
+_________________________________________________________________
+dense_4 (Dense)              (None, 1)                 33
+=================================================================
+Total params: 14,918
+Trainable params: 14,918
+Non-trainable params: 0
+_________________________________________________________________
+2021-10-30 21:27:46.423955: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+Epoch 1/40
+4/4 - 10s - loss: 0.4185 - accuracy: 0.3214 - val_loss: 0.3990 - val_accuracy: 0.3214
+Epoch 2/40
+4/4 - 0s - loss: 0.3924 - accuracy: 0.2946 - val_loss: 0.3797 - val_accuracy: 0.3214
+Epoch 3/40
+4/4 - 0s - loss: 0.3745 - accuracy: 0.3304 - val_loss: 0.3639 - val_accuracy: 0.3214
+Epoch 4/40
+4/4 - 0s - loss: 0.3592 - accuracy: 0.3304 - val_loss: 0.3497 - val_accuracy: 0.3214
+Epoch 5/40
+4/4 - 0s - loss: 0.3454 - accuracy: 0.3304 - val_loss: 0.3365 - val_accuracy: 0.3214
+Epoch 6/40
+4/4 - 0s - loss: 0.3325 - accuracy: 0.3393 - val_loss: 0.3241 - val_accuracy: 0.3214
+Epoch 7/40
+4/4 - 0s - loss: 0.3203 - accuracy: 0.3304 - val_loss: 0.3123 - val_accuracy: 0.3214
+Epoch 8/40
+4/4 - 0s - loss: 0.3086 - accuracy: 0.3304 - val_loss: 0.3008 - val_accuracy: 0.3214
+Epoch 9/40
+4/4 - 0s - loss: 0.2973 - accuracy: 0.3393 - val_loss: 0.2899 - val_accuracy: 0.3214
+Epoch 10/40
+4/4 - 0s - loss: 0.2864 - accuracy: 0.3304 - val_loss: 0.2793 - val_accuracy: 0.3214
+Epoch 11/40
+4/4 - 0s - loss: 0.2760 - accuracy: 0.3571 - val_loss: 0.2692 - val_accuracy: 0.3571
+Epoch 12/40
+4/4 - 0s - loss: 0.2660 - accuracy: 0.4464 - val_loss: 0.2596 - val_accuracy: 0.3214
+Epoch 13/40
+4/4 - 0s - loss: 0.2566 - accuracy: 0.3482 - val_loss: 0.2505 - val_accuracy: 0.2500
+Epoch 14/40
+4/4 - 0s - loss: 0.2477 - accuracy: 0.5089 - val_loss: 0.2418 - val_accuracy: 0.2857
+Epoch 15/40
+4/4 - 0s - loss: 0.2392 - accuracy: 0.4643 - val_loss: 0.2337 - val_accuracy: 0.3571
+Epoch 16/40
+4/4 - 0s - loss: 0.2312 - accuracy: 0.4643 - val_loss: 0.2261 - val_accuracy: 0.3571
+Epoch 17/40
+4/4 - 0s - loss: 0.2238 - accuracy: 0.4464 - val_loss: 0.2190 - val_accuracy: 0.2857
+Epoch 18/40
+4/4 - 0s - loss: 0.2168 - accuracy: 0.4732 - val_loss: 0.2124 - val_accuracy: 0.3214
+Epoch 19/40
+4/4 - 0s - loss: 0.2103 - accuracy: 0.4286 - val_loss: 0.2060 - val_accuracy: 0.3214
+Epoch 20/40
+4/4 - 0s - loss: 0.2041 - accuracy: 0.4375 - val_loss: 0.2000 - val_accuracy: 0.3214
+Epoch 21/40
+4/4 - 0s - loss: 0.1981 - accuracy: 0.4911 - val_loss: 0.1942 - val_accuracy: 0.3571
+Epoch 22/40
+4/4 - 0s - loss: 0.1924 - accuracy: 0.5268 - val_loss: 0.1887 - val_accuracy: 0.3571
+Epoch 23/40
+4/4 - 0s - loss: 0.1870 - accuracy: 0.4821 - val_loss: 0.1835 - val_accuracy: 0.3571
+Epoch 24/40
+4/4 - 0s - loss: 0.1819 - accuracy: 0.4375 - val_loss: 0.1784 - val_accuracy: 0.3214
+Epoch 25/40
+4/4 - 0s - loss: 0.1769 - accuracy: 0.4643 - val_loss: 0.1737 - val_accuracy: 0.3571
+Epoch 26/40
+4/4 - 0s - loss: 0.1723 - accuracy: 0.5446 - val_loss: 0.1692 - val_accuracy: 0.3571
+Epoch 27/40
+4/4 - 0s - loss: 0.1678 - accuracy: 0.4821 - val_loss: 0.1648 - val_accuracy: 0.3571
+Epoch 28/40
+4/4 - 0s - loss: 0.1635 - accuracy: 0.4643 - val_loss: 0.1608 - val_accuracy: 0.3571
+Epoch 29/40
+4/4 - 0s - loss: 0.1596 - accuracy: 0.5089 - val_loss: 0.1570 - val_accuracy: 0.3571
+Epoch 30/40
+4/4 - 0s - loss: 0.1557 - accuracy: 0.4554 - val_loss: 0.1534 - val_accuracy: 0.3571
+Epoch 31/40
+4/4 - 0s - loss: 0.1523 - accuracy: 0.4643 - val_loss: 0.1500 - val_accuracy: 0.3214
+Epoch 32/40
+4/4 - 0s - loss: 0.1490 - accuracy: 0.5446 - val_loss: 0.1468 - val_accuracy: 0.1786
+Epoch 33/40
+4/4 - 0s - loss: 0.1459 - accuracy: 0.5625 - val_loss: 0.1439 - val_accuracy: 0.1786
+Epoch 34/40
+4/4 - 0s - loss: 0.1431 - accuracy: 0.5446 - val_loss: 0.1414 - val_accuracy: 0.2857
+Epoch 35/40
+4/4 - 0s - loss: 0.1406 - accuracy: 0.5357 - val_loss: 0.1390 - val_accuracy: 0.2857
+Epoch 36/40
+4/4 - 0s - loss: 0.1383 - accuracy: 0.5268 - val_loss: 0.1367 - val_accuracy: 0.3571
+Epoch 37/40
+4/4 - 0s - loss: 0.1360 - accuracy: 0.5089 - val_loss: 0.1347 - val_accuracy: 0.3571
+Epoch 38/40
+4/4 - 0s - loss: 0.1341 - accuracy: 0.4821 - val_loss: 0.1329 - val_accuracy: 0.3214
+Epoch 39/40
+4/4 - 0s - loss: 0.1324 - accuracy: 0.5179 - val_loss: 0.1313 - val_accuracy: 0.2857
+Epoch 40/40
+4/4 - 0s - loss: 0.1309 - accuracy: 0.4911 - val_loss: 0.1300 - val_accuracy: 0.2857
+history_dict dict_keys(['loss', 'accuracy', 'val_loss', 'val_accuracy'])
+1/1 [==============================] - 0s 30ms/step - loss: 0.1300 - accuracy: 0.2857
+[0.12995730340480804, 0.2857142984867096]
+
+
+
+************************************************************************************************************************************************
+************************************************************************************************************************************************
+************************************************************************************************************************************************
+
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+embedding (Embedding)        (None, 50, 20)            71540
+_________________________________________________________________
+spatial_dropout1d (SpatialDr (None, 50, 20)            0
+_________________________________________________________________
+lstm (LSTM)                  (None, 100)               48400
+_________________________________________________________________
+dense (Dense)                (None, 64)                6464
+_________________________________________________________________
+dense_1 (Dense)              (None, 32)                2080
+_________________________________________________________________
+dense_2 (Dense)              (None, 1)                 33
+=================================================================
+Total params: 128,517
+Trainable params: 128,517
+Non-trainable params: 0
+_________________________________________________________________
+None
+2021-10-30 21:30:06.819261: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+Epoch 1/20
+14/14 - 2s - loss: 0.0000e+00 - accuracy: 0.3255 - val_loss: 0.0000e+00 - val_accuracy: 0.2523
+Epoch 2/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.3278 - val_loss: 0.0000e+00 - val_accuracy: 0.2710
+Epoch 3/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.3255 - val_loss: 0.0000e+00 - val_accuracy: 0.2710
+Epoch 4/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.3255 - val_loss: 0.0000e+00 - val_accuracy: 0.2710
+Epoch 5/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4057 - val_loss: 0.0000e+00 - val_accuracy: 0.4486
+Epoch 6/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4599 - val_loss: 0.0000e+00 - val_accuracy: 0.4579
+Epoch 7/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.5118 - val_loss: 0.0000e+00 - val_accuracy: 0.4206
+Epoch 8/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.5236 - val_loss: 0.0000e+00 - val_accuracy: 0.4579
+Epoch 9/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4906 - val_loss: 0.0000e+00 - val_accuracy: 0.4299
+Epoch 10/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4410 - val_loss: 0.0000e+00 - val_accuracy: 0.4299
+Epoch 11/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4434 - val_loss: 0.0000e+00 - val_accuracy: 0.4486
+Epoch 12/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4552 - val_loss: 0.0000e+00 - val_accuracy: 0.4393
+Epoch 13/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4623 - val_loss: 0.0000e+00 - val_accuracy: 0.4486
+Epoch 14/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4340 - val_loss: 0.0000e+00 - val_accuracy: 0.4299
+Epoch 15/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4292 - val_loss: 0.0000e+00 - val_accuracy: 0.4206
+Epoch 16/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4387 - val_loss: 0.0000e+00 - val_accuracy: 0.4112
+Epoch 17/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4340 - val_loss: 0.0000e+00 - val_accuracy: 0.3925
+Epoch 18/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4363 - val_loss: 0.0000e+00 - val_accuracy: 0.3832
+Epoch 19/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4316 - val_loss: 0.0000e+00 - val_accuracy: 0.3738
+Epoch 20/20
+14/14 - 0s - loss: 0.0000e+00 - accuracy: 0.4340 - val_loss: 0.0000e+00 - val_accuracy: 0.3925
+
+
+
+************************************************************************************************************************************************
+************************************************************************************************************************************************
+************************************************************************************************************************************************
+
+
+5/5 [==============================] - 0s 5ms/step - loss: 0.1300 - accuracy: 0.4857
+The loss and accuracy of Conv1D are: [0.12995730340480804, 0.48571428656578064]
+17/17 [==============================] - 0s 6ms/step - loss: 0.0000e+00 - accuracy: 0.4331
+The loss and accuracy of LSTM are: [0.0, 0.43314501643180847]
